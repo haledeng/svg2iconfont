@@ -1,0 +1,10 @@
+@font-face { 
+font-family: "iconfont";src: url("./fonts/iconfont.eot");
+src: url("./fonts/iconfont.eot?#iefix") format("embedded-opentype"),
+url("./fonts/iconfont.woff") format("woff"),
+url("./fonts/iconfont.ttf") format("truetype"),
+url("./fonts/iconfont.svg#iconfont") format("svg");}
+.icon-font{font-family:"iconfont";font-size:40px;font-style:normal;}
+.i-iconfont-guanbi:after{content: "\ffff";}
+.i-iconfont-player-play:after{content: "\fffe";}
+.i-iconfont-ren:after{content: "\fffd";}
