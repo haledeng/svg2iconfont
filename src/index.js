@@ -70,7 +70,7 @@ function generateCss(iconNames, iconContents, output){
     content.push('url("./' + config.fontDir + '/' + config.fontName + '.woff") format("woff"),');
     content.push('url("./' + config.fontDir + '/' + config.fontName + '.ttf") format("truetype"),');
     content.push('url("./' + config.fontDir + '/' + config.fontName + '.svg#' + config.fontName + '") format("svg");}');
-    content.push('.icon-font{font-family:"' + config.fontName + '";font-size:40px;font-style:normal;}');
+    content.push('.icon-font{font-family:"' + config.fontName + '";font-size:14px;font-style:normal;}');
     iconNames.forEach(function(iconName, index){
         iconContents[index] = iconContents[index].replace('&#xf', '\\f');
         // content.push('%i-' + iconName + '{\r\n\t&:after{\r\n\t\tcontent:"' + iconContents[index] + '";\r\n\t}\r\n}');
