@@ -13,3 +13,11 @@ var parser = require('svg2iconfont');
 // output : 产出目录
 parser.parse(svgPath, outputPath);
 ```
+
+
+### CLI 方式
+```
+npm i -g svg2iconfont
+```
+
+svg2iconfont svgpath outputpath

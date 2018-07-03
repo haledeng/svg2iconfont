@@ -1,6 +1,6 @@
 {
   "name": "svg2iconfont",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "parser svg to iconfont",
   "main": "src/index.js",
   "scripts": {
@@ -10,6 +10,9 @@
     "svg",
     "iconfont"
   ],
+  "bin": {
+    "svg2iconfont": "src/bin/index.js"
+  },
   "author": {
     "name": "helondeng",
     "email": "dhlwust@163.com"
