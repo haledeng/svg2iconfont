@@ -114,9 +114,9 @@ function generateBase64Css(iconNames, iconContents, config, fontContent) {
 
     var content = [];
     content.push('@font-face { ');
-    content.push('font-family: "iconfont";');
+    content.push('font-family: "' + config.fontName + '";');
     content.push('src: url("data:application/octet-stream;base64,' + fontBase64 + '") format("truetype");}');
-    content.push('.' + config.iconClass + '{font-family:"iconfont";font-size:16px;font-style:normal;}');
+    content.push('.' + config.iconClass + '{font-family:"' + config.fontName + '";font-size' + config.font + ';font-style:normal;}');
     iconNames.forEach(function(iconName, index) {
         iconContents[index] = iconContents[index].replace('&#xf', '\\f');
         content.push('.i-' + iconName + ':' + config.pseudo + '{content: "' + iconContents[index] + '";}');
@@ -160,8 +160,9 @@ function parse(options) {
         font: '14px',
         embeddedCssName: 'iconfont-embedded.css',
         demoHtml: 'demo.html',
-        hasDemo: true,
+        hasDemo: false,
         pseudo: 'after',
+        hasEmbedded: false,
         iconClass: 'icon-font'
     }, options, true);
 
@@ -171,7 +172,9 @@ function parse(options) {
     if (config.hasDemo) {
         generateDemo(results.iconNames, config);
     }
-    generateBase64Css(results.iconNames, results.iconContents, config, results.fontContent);
+    if (config.hasEmbedded) {
+        generateBase64Css(results.iconNames, results.iconContents, config, results.fontContent);
+    }
     return results;
 }
 
