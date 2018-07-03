@@ -1,6 +1,6 @@
 {
   "name": "svg2iconfont",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "parser svg to iconfont",
   "main": "src/index.js",
   "scripts": {
@@ -24,6 +24,8 @@
   },
   "readmeFilename": "README.md",
   "dependencies": {
-    "font-carrier": "0.0.5"
+    "font-carrier": "0.0.5",
+    "mkdirp": "^0.5.1",
+    "optimist": "^0.6.1"
   }
 }
