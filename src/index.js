@@ -83,7 +83,7 @@ function generateCss(iconNames, iconContents, config, fontContent) {
     content.push('.' + config.iconClass + '{font-family:"' + config.fontName + '" !important;font-size:' + config.font + ';font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}');
     iconNames.forEach(function(iconName, index) {
         iconContents[index] = iconContents[index].replace('&#xf', '\\f');
-        content.push('.i-' + iconName + ':' + config.pseudo + '{content: "' + iconContents[index] + '";}');
+        content.push('.' + config.classPrefix + iconName + ':' + config.pseudo + '{content: "' + iconContents[index] + '";}');
     });
     fs.writeFileSync(output ? output : 'iconfont.css', content.join('\r\n'));
 }
@@ -97,7 +97,7 @@ function generateDemo(iconNames, config) {
     content.push('</head>\r\n<body>')
 
     iconNames.forEach(function(iconName, index) {
-        content.push('<i class="' + config.iconClass + ' i-' + iconName + '"></i>');
+        content.push('<i class="' + config.iconClass + ' ' + config.classPrefix + iconName + '"></i>');
     });
     content.push('</body>\r\n</html>')
 
@@ -122,7 +122,7 @@ function generateBase64Css(iconNames, iconContents, config, fontContent) {
     content.push('.' + config.iconClass + '{font-family:"' + config.fontName + '";font-size' + config.font + ';font-style:normal;}');
     iconNames.forEach(function(iconName, index) {
         iconContents[index] = iconContents[index].replace('&#xf', '\\f');
-        content.push('.i-' + iconName + ':' + config.pseudo + '{content: "' + iconContents[index] + '";}');
+        content.push('.' + config.classPrefix + iconName + ':' + config.pseudo + '{content: "' + iconContents[index] + '";}');
     });
     fs.writeFileSync(path.join(output, config.embeddedCssName), content.join('\r\n'));
 }
@@ -166,7 +166,8 @@ function parse(options) {
         hasDemo: false,
         pseudo: 'after',
         hasEmbedded: false,
-        iconClass: 'icon-font'
+        iconClass: 'icon-font',
+        classPrefix: 'i-'
     }, options, true);
 
 

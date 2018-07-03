@@ -12,5 +12,7 @@ icon.parse({
 		return ret;
 	},
 	iconClass: 'bat-iconfont',
-	fontName: 'bat-iconfont'
+	fontName: 'bat-iconfont',
+	hasDemo: true,
+	classPrefix: 'icon-'
 });
