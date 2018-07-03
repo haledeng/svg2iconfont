@@ -69,17 +69,17 @@ function generateIconContent(n) {
 
 // 生成 icon 样式
 function generateCss(iconNames, iconContents, config, fontContent) {
-    var output = path.join(config.output, config.cssName);
+    var output = path.join(config.output, config.fontDir, config.cssName);
     var fontBase64 = file2Base64(fontContent);
     var content = [];
     let t = new Date().getTime();
     content.push('@font-face { ');
-    content.push('font-family: "' + config.fontName + '";src: url("./' + config.fontDir + '/' + config.fontName + '.eot?t=' + t + '");');
-    content.push('src: url("./' + config.fontDir + '/' + config.fontName + '.eot?t=' + t + '#iefix") format("embedded-opentype"),');
+    content.push('font-family: "' + config.fontName + '";src: url("' + config.fontName + '.eot?t=' + t + '");');
+    content.push('src: url("' + config.fontName + '.eot?t=' + t + '#iefix") format("embedded-opentype"),');
     content.push('url("data:application/x-font-woff;charset=utf-8;base64,' + fontBase64 + '") format("woff");}');
     // content.push('url("./' + config.fontDir + '/' + config.fontName + '.woff") format("woff"),');
-    content.push('url("./' + config.fontDir + '/' + config.fontName + '.ttf?t=' + t + '") format("truetype"),');
-    content.push('url("./' + config.fontDir + '/' + config.fontName + '.svg?t=' + t + '#' + config.fontName + '") format("svg");}');
+    content.push('url("' + config.fontName + '.ttf?t=' + t + '") format("truetype"),');
+    content.push('url("' + config.fontName + '.svg?t=' + t + '#' + config.fontName + '") format("svg");}');
     content.push('.' + config.iconClass + '{font-family:"' + config.fontName + '" !important;font-size:' + config.font + ';font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}');
     iconNames.forEach(function(iconName, index) {
         iconContents[index] = iconContents[index].replace('&#xf', '\\f');
@@ -93,7 +93,7 @@ function generateDemo(iconNames, config) {
     var output = config.output;
     var content = [];
     content.push('<!DOCTYPE html>\r\n<html lang="en">\r\n<head>\r\n<meta charset="UTF-8">\r\n<title>iconfont demo</title>');
-    content.push('<link href="' + config.cssName + '" rel="stylesheet" type="text/css" /> ');
+    content.push('<link href="' + config.fontDir + '/' + config.cssName + '" rel="stylesheet" type="text/css" /> ');
     content.push('</head>\r\n<body>')
 
     iconNames.forEach(function(iconName, index) {
