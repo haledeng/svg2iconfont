@@ -68,16 +68,19 @@ function generateIconContent(n) {
 }
 
 // 生成 icon 样式
-function generateCss(iconNames, iconContents, config) {
+function generateCss(iconNames, iconContents, config, fontContent) {
     var output = path.join(config.output, config.cssName);
+    var fontBase64 = file2Base64(fontContent);
     var content = [];
+    let t = new Date().getTime();
     content.push('@font-face { ');
-    content.push('font-family: "' + config.fontName + '";src: url("./' + config.fontDir + '/' + config.fontName + '.eot");');
-    content.push('src: url("./' + config.fontDir + '/' + config.fontName + '.eot?#iefix") format("embedded-opentype"),');
-    content.push('url("./' + config.fontDir + '/' + config.fontName + '.woff") format("woff"),');
-    content.push('url("./' + config.fontDir + '/' + config.fontName + '.ttf") format("truetype"),');
-    content.push('url("./' + config.fontDir + '/' + config.fontName + '.svg#' + config.fontName + '") format("svg");}');
-    content.push('.' + config.iconClass + '{font-family:"' + config.fontName + '";font-size:' + config.font + ';font-style:normal;}');
+    content.push('font-family: "' + config.fontName + '";src: url("./' + config.fontDir + '/' + config.fontName + '.eot?t=' + t + '");');
+    content.push('src: url("./' + config.fontDir + '/' + config.fontName + '.eot?t=' + t + '#iefix") format("embedded-opentype"),');
+    content.push('url("data:application/x-font-woff;charset=utf-8;base64,' + fontBase64 + '") format("woff");}');
+    // content.push('url("./' + config.fontDir + '/' + config.fontName + '.woff") format("woff"),');
+    content.push('url("./' + config.fontDir + '/' + config.fontName + '.ttf?t=' + t + '") format("truetype"),');
+    content.push('url("./' + config.fontDir + '/' + config.fontName + '.svg?t=' + t + '#' + config.fontName + '") format("svg");}');
+    content.push('.' + config.iconClass + '{font-family:"' + config.fontName + '";font-size:' + config.font + ';font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}');
     iconNames.forEach(function(iconName, index) {
         iconContents[index] = iconContents[index].replace('&#xf', '\\f');
         content.push('.i-' + iconName + ':' + config.pseudo + '{content: "' + iconContents[index] + '";}');
@@ -168,7 +171,7 @@ function parse(options) {
 
 
     var results = generateFonts(config)
-    generateCss(results.iconNames, results.iconContents, config);
+    generateCss(results.iconNames, results.iconContents, config, results.fontContent);
     if (config.hasDemo) {
         generateDemo(results.iconNames, config);
     }
