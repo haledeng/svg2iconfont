@@ -70,13 +70,13 @@ function generateIconContent(n) {
 // 生成 icon 样式
 function generateCss(iconNames, iconContents, config, fontContent) {
     var output = path.join(config.output, config.fontDir, config.cssName);
-    var fontBase64 = file2Base64(fontContent);
+    var fontBase64 = file2Base64(fontContent.woff);
     var content = [];
     let t = new Date().getTime();
     content.push('@font-face { ');
     content.push('font-family: "' + config.fontName + '";src: url("' + config.fontName + '.eot?t=' + t + '");');
     content.push('src: url("' + config.fontName + '.eot?t=' + t + '#iefix") format("embedded-opentype"),');
-    content.push('url("data:application/x-font-woff;charset=utf-8;base64,' + fontBase64 + '") format("woff");}');
+    content.push('url("data:application/x-font-woff;charset=utf-8;base64,' + fontBase64 + '") format("woff"),');
     // content.push('url("./' + config.fontDir + '/' + config.fontName + '.woff") format("woff"),');
     content.push('url("' + config.fontName + '.ttf?t=' + t + '") format("truetype"),');
     content.push('url("' + config.fontName + '.svg?t=' + t + '#' + config.fontName + '") format("svg");}');
@@ -106,14 +106,14 @@ function generateDemo(iconNames, config) {
 
 // 文件转化成base64
 function file2Base64(fontContent) {
-    var base64 = new Buffer(fontContent.ttf).toString('base64');
+    var base64 = new Buffer(fontContent).toString('base64');
     return base64;
 }
 
 // 字体文件base64引入
 function generateBase64Css(iconNames, iconContents, config, fontContent) {
     var output = config.output;
-    var fontBase64 = file2Base64(fontContent);
+    var fontBase64 = file2Base64(fontContent.ttf);
 
     var content = [];
     content.push('@font-face { ');
