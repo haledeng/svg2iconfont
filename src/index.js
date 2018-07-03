@@ -80,7 +80,7 @@ function generateCss(iconNames, iconContents, config, fontContent) {
     // content.push('url("./' + config.fontDir + '/' + config.fontName + '.woff") format("woff"),');
     content.push('url("./' + config.fontDir + '/' + config.fontName + '.ttf?t=' + t + '") format("truetype"),');
     content.push('url("./' + config.fontDir + '/' + config.fontName + '.svg?t=' + t + '#' + config.fontName + '") format("svg");}');
-    content.push('.' + config.iconClass + '{font-family:"' + config.fontName + '";font-size:' + config.font + ';font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}');
+    content.push('.' + config.iconClass + '{font-family:"' + config.fontName + '" !important;font-size:' + config.font + ';font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}');
     iconNames.forEach(function(iconName, index) {
         iconContents[index] = iconContents[index].replace('&#xf', '\\f');
         content.push('.i-' + iconName + ':' + config.pseudo + '{content: "' + iconContents[index] + '";}');
