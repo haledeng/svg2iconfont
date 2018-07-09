@@ -17,21 +17,39 @@ var font = fontCarrier.create();
 
 var svgCnt = 4095; // \ffff
 
+/**
+ * extract all svg file name from svg path.
+ */
+const extractSvg = (conf) => {
+    let {
+        svgPath
+    } = conf;
+    if (!svgPath) return console.log('`svgPath` must be provided');
+    let files = fs.readdirSync(svgPath);
+    files = files.filter(item => path.extname(item) === '.svg');
+    return files;
+};
+
+
+
 function generateFonts(conf) {
-    var svgPath = conf.svgPath;
-    var output = path.join(conf.output, conf.fontDir);
-    var files = fs.readdirSync(svgPath),
-        iconContent,
+    let output = path.join(conf.output, conf.fontDir);
+    let {
+        svgPath
+    } = conf;
+    var iconContent,
         iconNames = [],
         iconContents = [],
         svgsObj = {};
 
-    files = files.filter(item => path.extname(item) == '.svg');
+
+    let files = extractSvg(conf);
+
     if (typeof conf.sort === 'function') {
         files = conf.sort(files);
     }
 
-    files.forEach(function(file, index) {
+    files.forEach((file) => {
         iconContent = generateIconContent(svgCnt--);
         iconNames.push(path.basename(file, '.svg'));
         iconContents.push(iconContent);
@@ -52,7 +70,7 @@ function generateFonts(conf) {
         fontContent: fontContent,
         iconNames: iconNames,
         iconContents: iconContents
-    }
+    };
 }
 
 // 十进制 转 16进制
@@ -67,23 +85,86 @@ function generateIconContent(n) {
     return '&#xf' + decimal2Hex(n);
 }
 
+
+const generateCss = (files, conf) => {
+    let svgsObj = {};
+    let {
+        fontName,
+        iconClass,
+        font,
+        svgPath,
+        pseudo,
+        classPrefix,
+        output,
+        fontDir
+    } = conf;
+    // all icon class icon
+    let iconsContent = [];
+    files.forEach(file => {
+        let iconName = path.basename(file, '.svg');
+        let iconContent = generateIconContent(svgCnt--);
+        svgsObj[iconContent] = fs.readFileSync(path.join(svgPath, file)).toString();
+        iconsContent.push(`.${classPrefix}${iconName}:${pseudo}{content: "${iconContent.replace('&#xf', '\\f')}";}`);
+    });
+
+
+    font.setSvg(svgsObj);
+    // 导出目录
+    let outputPath = path.join(output, fontDir);
+
+    // output 目录不存在
+    mkdirp.sync(outputPath);
+
+    // 导出字体
+    var fontContent = font.output({
+        // 导出字体路径
+        path: path.join(outputPath, fontName)
+    });
+
+    var fontBase64 = file2Base64(fontContent.woff);
+
+    // 通用字体
+    let content = [];
+    content.push('@font-face { ');
+    content.push(`font-family: "${fontName}";src: url("${fontName}.eot?t=${t}");`);
+    content.push(`src: url("${fontName}.eot?t=${t}#iefix") format("embedded-opentype"),`);
+    content.push(`url("data:application/x-font-woff;charset=utf-8;base64,${fontBase64}") format("woff"),`);
+    // content.push('url("./' + config.fontDir + '/' + config.fontName + '.woff") format("woff"),');
+    content.push(`url("${fontName}.ttf?t=${t}") format("truetype"),`);
+    content.push(`url("${fontName}.svg?t=${t}#${fontName}") format("svg");}`);
+    content.push(`.${iconClass}{font-family:"${fontName}" !important;font-size:${font};font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}`);
+
+    fs.writeFileSync(output ? output : 'iconfont.css', content.join('\r\n') + iconsContent.join('\r\n'));
+};
+
+
 // 生成 icon 样式
 function generateCss(iconNames, iconContents, config, fontContent) {
+    // css directory
     var output = path.join(config.output, config.fontDir, config.cssName);
+    // base64 content
     var fontBase64 = file2Base64(fontContent.woff);
+    let {
+        fontName,
+        iconClass,
+        font,
+        classPrefix,
+        pseudo
+    } = config;
+
     var content = [];
     let t = new Date().getTime();
     content.push('@font-face { ');
-    content.push('font-family: "' + config.fontName + '";src: url("' + config.fontName + '.eot?t=' + t + '");');
-    content.push('src: url("' + config.fontName + '.eot?t=' + t + '#iefix") format("embedded-opentype"),');
-    content.push('url("data:application/x-font-woff;charset=utf-8;base64,' + fontBase64 + '") format("woff"),');
+    content.push(`font-family: "${fontName}";src: url("${fontName}.eot?t=${t}");`);
+    content.push(`src: url("${fontName}.eot?t=${t}#iefix") format("embedded-opentype"),`);
+    content.push(`url("data:application/x-font-woff;charset=utf-8;base64,${fontBase64}") format("woff"),`);
     // content.push('url("./' + config.fontDir + '/' + config.fontName + '.woff") format("woff"),');
-    content.push('url("' + config.fontName + '.ttf?t=' + t + '") format("truetype"),');
-    content.push('url("' + config.fontName + '.svg?t=' + t + '#' + config.fontName + '") format("svg");}');
-    content.push('.' + config.iconClass + '{font-family:"' + config.fontName + '" !important;font-size:' + config.font + ';font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}');
-    iconNames.forEach(function(iconName, index) {
+    content.push(`url("${fontName}.ttf?t=${t}") format("truetype"),`);
+    content.push(`url("${fontName}.svg?t=${t}#${fontName}") format("svg");}`);
+    content.push(`.${iconClass}{font-family:"${fontName}" !important;font-size:${font};font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}`);
+    iconNames.forEach((iconName, index) => {
         iconContents[index] = iconContents[index].replace('&#xf', '\\f');
-        content.push('.' + config.classPrefix + iconName + ':' + config.pseudo + '{content: "' + iconContents[index] + '";}');
+        content.push(`.${classPrefix}${iconName}:${pseudo}{content: "${iconContents[index]}";}`);
     });
     fs.writeFileSync(output ? output : 'iconfont.css', content.join('\r\n'));
 }
@@ -126,16 +207,6 @@ function generateBase64Css(iconNames, iconContents, config, fontContent) {
     });
     fs.writeFileSync(path.join(output, config.embeddedCssName), content.join('\r\n'));
 }
-
-function extend(target, source, isOverrider) {
-    for (var key in source) {
-        if (typeof target[key] === 'undefined' || isOverrider) {
-            target[key] = source[key];
-        }
-    }
-    return target;
-}
-
 // 导出接口
 // svgPath : svg 路径
 // output : 产出目录
@@ -156,7 +227,7 @@ function parse(options) {
         fs.mkdirSync(options.output);
     }
 
-    let config = extend({
+    let config = Object.assign({
         fontDir: 'fonts',
         fontName: 'iconfont',
         cssName: 'iconfont.css',
@@ -168,10 +239,11 @@ function parse(options) {
         hasEmbedded: false,
         iconClass: 'icon-font',
         classPrefix: 'i-'
-    }, options, true);
+    }, options);
 
 
-    var results = generateFonts(config)
+    // var results = generateFonts(config)
+    let files = extractSvg(conf);
     generateCss(results.iconNames, results.iconContents, config, results.fontContent);
     if (config.hasDemo) {
         generateDemo(results.iconNames, config);
