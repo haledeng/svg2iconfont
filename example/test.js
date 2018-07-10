@@ -1,4 +1,4 @@
-var icon = require('../src/index');
+var icon = require('../lib/index');
 
 icon.parse({
 	svgPath: './svg', 
