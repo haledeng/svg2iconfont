@@ -21,8 +21,6 @@ options = {
     font: 14px, 
     // [可选] 是否产出 demo 页面
     hasDemo: false, 
-    // [可选] 自定义产出字体排序，默认按照文件排序
-    sort: function, 
     // [可选] 伪类，默认 after
     pseudo: 'after', 
 }
