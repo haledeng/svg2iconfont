@@ -72,11 +72,13 @@ const generateCss = (files, conf) => {
     } = conf;
     // all icon class icon
     let iconsContent = [];
+    let lessIconsContent = [];
     files.forEach(file => {
         let iconName = path.basename(file, '.svg');
         let iconContent = generateIconContent(svgCnt--);
         svgsObj[iconContent] = fs.readFileSync(path.join(svgPath, file)).toString();
         iconsContent.push(`.${classPrefix}${iconName}:${pseudo}{content: "${iconContent.replace('&#xf', '\\f')}";}`);
+        lessIconsContent.push(`.${classPrefix}${iconName}(){&:${pseudo}{content: "${iconContent.replace('&#xf', '\\f')}";}}`);
     });
 
 
@@ -98,6 +100,7 @@ const generateCss = (files, conf) => {
     var t = new Date().getTime();
     // 通用字体
     let content = [];
+    let lessContent = [];
     content.push('@font-face { ');
     content.push(`font-family: "${fontName}";src: url("${fontName}.eot?t=${t}");`);
     content.push(`src: url("${fontName}.eot?t=${t}#iefix") format("embedded-opentype"),`);
@@ -105,9 +108,15 @@ const generateCss = (files, conf) => {
     // content.push('url("./' + config.fontDir + '/' + config.fontName + '.woff") format("woff"),');
     content.push(`url("${fontName}.ttf?t=${t}") format("truetype"),`);
     content.push(`url("${fontName}.svg?t=${t}#${fontName}") format("svg");}`);
+
+    lessContent = [...content];
     content.push(`.${iconClass}{font-family:"${fontName}" !important;font-size:${font};font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}`);
 
+    lessContent.push(`.${iconClass}(){font-family:"${fontName}" !important;font-size:${font};font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing: grayscale;}`);
+
+
     fs.writeFileSync(path.join(outputPath, cssName), content.join('\r\n') + iconsContent.join('\r\n'));
+    fs.writeFileSync(path.join(outputPath, cssName.replace('.css', '.less')), lessContent.join('\r\n') + lessIconsContent.join('\r\n'));
 };
 
 

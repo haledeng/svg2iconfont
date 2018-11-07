@@ -1,6 +1,6 @@
 {
   "name": "svg2iconfont",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "parser svg to iconfont",
   "main": "lib/index.js",
   "scripts": {
